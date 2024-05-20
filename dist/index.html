@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEMEPVP</title>
+  <meta name="description" content="A complete example multiplayer .io web game called MEMEPVP, implemented from scratch. Built with Javascript and Node.js. Open source on Github.">
+  <meta property="og:title" content="MEMEPVP">
+  <meta property="og:description" content="A complete example multiplayer .io web game called MEMEPVP, implemented from scratch. Built with Javascript and Node.js. Open source on Github.">
+  <meta property="og:image" content="/assets/icon1200.png">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58664433-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-58664433-3');
+    document.addEventListener("DOMContentLoaded", function() {
+    const skins = document.querySelectorAll('.skin');
+    console.log('Skins initialized:', skins.length); // Debug output to check how many skins are detected
+
+    skins.forEach(skin => {
+      skin.addEventListener('click', function() {
+        console.log('Skin clicked:', this.alt); // Debug which skin is clicked
+
+        if (this.classList.contains('locked')) {
+          console.log('Clicked skin is locked:', this.alt); // Log if the clicked skin is locked
+          return; // Exit the function if skin is locked
+        }
+
+        // If this point is reached, the skin is not locked
+        console.log('Clicked skin is active:', this.alt);
+
+        // Remove active class from all skins
+        skins.forEach(s => s.classList.remove('active'));
+
+        // Add active class to the clicked skin
+        this.classList.add('active');
+      });
+    });
+  });
+  </script>
+  <style>
+    body, html { 
+      margin: 0; 
+      padding: 0; 
+      height: 100%; 
+      width: 100%; 
+      overflow: hidden; 
+      font-family: 'Press Start 2P', monospace; 
+    }
+    /*canvas#game-canvas {
+      width: 100vw;   
+      height: 100vh;  
+      position: fixed; 
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }*/
+    div.overlay {
+      position: fixed;
+      color: white;
+      text-align: center;
+    }
+    #play-menu {
+      display: none; /* hidden by default, shown via JavaScript when needed */
+      top: 10%; /* Adjust as needed */
+      left: 10%; /* Adjust as needed */
+      width: 80%; /* Larger width */
+      height: 80%; /* Larger height */
+      background-color: rgba(0,0,0,0.5); /* Semi-transparent black background */
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 2;
+      font-family: 'Press Start 2P', monospace !important; 
+    }
+
+    #project-name .meme { color: red; }
+    #project-name .pvp { color: black; }
+    #skins-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .skin {
+      width: 90px;
+      height: 90px;
+      border: 2px solid #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .skin:hover {
+      transform: scale(1.1);
+    }
+    .skin.locked {
+      filter: grayscale(100%);
+      cursor: not-allowed;
+      transform: none !important; /* Prevent transformations */
+      animation: none !important; /* Stop any animations */
+    }
+    .skin.locked::after {
+      content: '🔒';
+      position: absolute;
+      top: 35%;
+      left: 35%;
+      font-size: 24px;
+      color: white;
+    }
+    .skin.active {
+      animation: pulseAnimation 2s infinite;
+    }
+    .skin.active::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(0, 8, 255, 0.7) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulseAnimation 2s infinite;
+    }
+    @keyframes pulseAnimation {
+      0%, 100% { transform: scale(0.5); opacity: 1; }
+      70% { transform: scale(1.0); opacity: 0; }
+    }
+    #leaderboard {
+      font-family: 'Press Start 2P', monospace !important;
+    }
+    #social-buttons {
+    text-align: center;
+    margin-bottom: 10px; /* Space between buttons and the game title */
+    }
+
+    #social-buttons button {
+        font-family: 'Press Start 2P', monospace;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black for buttons */
+        color: white;
+        border: 2px solid white;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        margin: 0 5px;
+        outline: none;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    #social-buttons button:hover {
+        background-color: red; /* Lighten on hover */
+        color: black;
+    }
+
+  </style>
+  
+<link href="game.875a9cab1cf2ffc230c2.css" rel="stylesheet"></head>
+<body>
+  <canvas id="game-canvas"></canvas>
+  <div class="overlay" id="play-menu">
+    <div id="social-buttons">
+      <button onclick="window.open('https://twitter.com/memepvpsol', '_blank')">Twitter</button>
+      <button onclick="window.open('https://t.me/MEMEPVP', '_blank')">Telegram</button>
+      <button onclick="window.open('pump.fun', '_blank')">Pump</button>
+      <button onclick="window.open('', '_blank')">DOCS</button>
+    </div>
+    <h1 id="project-name"><span class="meme">MEME</span><span class="pvp">PVP</span> <span class="meme">(BETA)</span></h1>
+    <p style="color:black; font-size: 18px; font-weight: 500;">Stay alive and shoot other players.<br>Use your mouse to move.</p>
+    <input type="text" id="username-input" placeholder="Username" style="width: 0px !important; height: 0px !important;">
+    <button id="connect-wallet-button">CONNECT WALLET</button>
+    <button id="play-button">PLAY</button>
+    <div id="skins-container">
+      <img src="/assets/skin1.svg" class="skin" alt="Skin 1" data-index="1">
+      <img src="/assets/skin2.svg" class="skin" alt="Skin 2"data-index="2">
+      <!-- Assuming there are 9 skins in total, skins 3 to 9 are locked -->
+      <img src="/assets/skin3.svg" class="skin" alt="Skin 3" data-index="3">
+      <img src="/assets/skin4.svg" class="skin" alt="Skin 4" data-index="4">
+      <img src="/assets/skin5.svg" class="skin locked" alt="Locked Skin 5" data-index="5">
+      <img src="/assets/skin6.svg" class="skin" alt="Skin 6" data-index="6">
+      <img src="/assets/skin7.svg" class="skin locked" alt="Locked Skin 7" data-index="7">
+      <img src="/assets/skin8.svg" class="skin locked" alt="Locked Skin 8" data-index="8">
+      <img src="/assets/skin9.svg" class="skin" alt="Skin 9" data-index="9">
+    </div>
+  </div>
+  <div id="leaderboard" class="hidden">
+    <table>
+      <tr>
+        <th>Username</th>
+        <th>Score</th>
+      </tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+    </table>
+  </div>
+  <div id="disconnect-modal" class="hidden">
+    <div>
+      <h2>Disconnected from Server </h2>
+      <hr />
+      <button id="reconnect-button">RECONNECT</button>
+    </div>
+  </div>
+
+<script type="text/javascript" src="game.e9e7306599a1694dc1cd.js"></script></body>
+</html>
