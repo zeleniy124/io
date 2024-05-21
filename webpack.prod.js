@@ -1,13 +1,41 @@
-// Learn more about this file at:
-// https://victorzhou.com/blog/build-an-io-game-part-1/#2-builds--project-setup
-const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
-const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-module.exports = merge(common, {
+module.exports = {
   mode: 'production',
-  optimization: {
-    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+  entry: './src/index.js',
+  output: {
+    filename: 'game.[hash].js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
   },
-});
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/assets', to: 'assets' }, // Adjust the path according to your project structure
+      ],
+    }),
+  ],
+  devServer: {
+    historyApiFallback: true,
+  },
+};
